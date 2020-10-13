@@ -1,0 +1,16 @@
+GET http://localhost:3000/
+
+
+###
+GET http://localhost:3000/index.html
+
+###
+GET http://localhost:3000/views/index.html
+###
+
+POST http://localhost:3000/submit HTTP/1.1
+content-type: application/json
+{
+    "ori-url": "www.foobar.foo/sadgebar",
+    "short-url": "/sadge"
+}
