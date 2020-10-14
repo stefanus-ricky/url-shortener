@@ -4,6 +4,7 @@ const fs = require('fs');
 require('dotenv').config();
 const bodyParser = require('body-parser');
 const dateFormat = require('dateformat');
+const  mongodb = require("mongodb");
 
 
 const express = require ('express');
@@ -29,10 +30,60 @@ app.post('/submit', function(req, res){
   res.sendFile(`${__dirname}/public/sucess.html`);
   console.log('post submit is requested');   
   console.log(req.body);
+  const data = req.body;
+  data.timestamp= dateFormat(new Date(), "dd/mm/yy, hh:mm:ss TT");
+
+  //DB
+  const uri =
+  "mongodb+srv://"+ process.env.USER+ ":" +
+  process.env.DB_PASSWORD +
+  "@" +
+  process.env.DB_HOST +
+  "/" +
+  process.env.DB_NAME +
+  "?retryWrites=true&w=majority";
+  console.log(`uri is ${uri}`);
+const client = new mongodb.MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:true });
+
+console.log('trying to connect');
+client.connect(async (err, dbb) => {
+  if (err) throw err;
+  console.log('connected to db');
+  let url_shortener = client.db("url_shortener");
+  let url = await url_shortener.collection("url").insertOne(data);
+  console.log('data succesfully inserted');
+  //await cursor.forEach(console.dir);
+  client.close();
+
+  });
 });
 
 
-// http://expressjs.com/en/starter/basic-routing.html
+function generateURL(){
+  let url;   
+  let fd = fs.readFileSync("./currentRandom.txt", "utf-8", (err, data) =>{
+    if(err){
+      console.log(err);
+    }
+  });
+  console.log('read success');
+  console.log(fd);
+  fd ++;
+  fs.writeFile("./currentRandom.txt", fd.toString(), (err) => {
+    if (err) console.log(err);
+    console.log("Successfully Written to File.");
+  });
+  console.log(fd);
+  //url = url+1;
+  //fs.writeFileSync("/currentRandom", url);
+  return fd;
+}
+app.post("/test", (req,res)=>{
+  console.log(generateURL());
+  res.redirect('/');
+  res.end();
+});
+
 app.get("/submit", (req, res) => {
     res.sendFile(`${__dirname}/public/sucess.html`);
     console.log('submit is requested');
@@ -41,10 +92,17 @@ app.get("/submit", (req, res) => {
 });
 
 
-// listen for requests :)
-var listener = app.listen(process.env.PORT, () => {
-    console.log(`Your app is listening on port ${listener.address().port}`);
 
+//Database 
+//
+const registerRouter = require('./routes/register');
+app.use('/register', registerRouter);
+
+
+
+// listen for requests 
+const listener = app.listen(process.env.PORT, () => {
+    console.log(`Your app is listening on port ${listener.address().port}`);
 });
 
 

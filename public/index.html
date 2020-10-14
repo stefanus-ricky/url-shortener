@@ -11,16 +11,25 @@
         <script src="/script.js" defer></script>
       </head>  
     <body>
-    <h1>My Header</h1>
-    <p>My paragraph.</p>
+      <nav>
+        <a href="/register">Register</a>
+      </nav>
+
+
+
+    <h1>Url shortener</h1>
+    <p>Shorten your url here</p>
     
     <form action="/submit" method="post">
         <label for="ori-url">Your url:</label>
         <input type="text" id="ori-url" name="ori-url"><br><br>
-        <label for="shorturl">Shorten url:</label>
+        <label for="shorturl">Request shorten url:</label>
         <input type="text" id="shorturl" name="shorturl"><br><br>
         <input type="submit" value="urlShortener">
-      </form> 
+    </form> 
+    <form action="/test" method="post">
+      <input type="submit" id="testid" name="testname" value="testing function"><br><br>
+    </form> 
     
     
     </body>
