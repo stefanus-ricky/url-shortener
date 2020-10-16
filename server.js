@@ -1,24 +1,113 @@
-const http = require('http');
-const url = require('url');
 const fs = require('fs');
 require('dotenv').config();
 const bodyParser = require('body-parser');
-const dateFormat = require('dateformat');
-const  mongodb = require("mongodb");
 
+const mongodb = require("mongodb");
+const mongoUtil= require('./mongoUtil');
+let database;
+const dayjs = require('dayjs');
+// mongoUtil.connectToServer( function( err, client ) {
+//   if (err) console.log(err);
+//   database = mongoUtil.getDb();
+//     const testingData= database.collection( 'url' ).find({}).toArray(function(err, docs) {
+//     console.log(docs.length);
+//     docs.forEach(element => console.log(element.endUrl));
+//   });
+//   // start the rest of your app here
+// } );
+
+
+
+// ______________________ mongoose
+
+const mongoose = require('mongoose');
+const urlModel = require('./models/urlSchema');
+const localUrl = process.env.DB_LOCAL;
+mongoose.connect(localUrl,  { 
+  useUnifiedTopology: true,  
+  useNewUrlParser: true  
+});
+const mongooseDB= mongoose.connection;
+mongooseDB.on('error', (err)=>console.error(err));
+mongooseDB.once('open', ()=> console.log(`connected to database`));
+const testdata = new urlModel ({endUrl: "www.example.com/1", shortUrl:"/exam1"});
+
+async function addTest(){
+  //create
+  try {
+    await testdata.save();
+    console.log(`test data saved`);
+  } catch (err) { }
+
+  // update
+  try {
+    await urlModel.find({endUrl: testdata.endUrl});
+    console.log(`url = ${testdata.shortUrl}`);
+
+
+    const conditions = { endUrl: testdata.endUrl };
+    const update = { shortUrl : "/exam21"};
+    const options = { multi: true };
+
+    urlModel.updateOne(conditions, update, options, callback);
+
+
+    console.log(`test data updated`);
+  } catch (err) { console.log(err);}
+  // read
+  try {
+    const urlList = await urlModel.find({});
+    console.log(`url list is ${urlList}`);
+  } catch (err) { console.log(err);}
+  // delete
+  try {
+    await urlModel.deleteOne({ owner:'testo' } , callback);
+    console.log(`data deleted`);
+  } catch (err) { console.log(err);}
+
+
+}
+addTest();
+
+function callback (err) {
+  if(err) {
+    console.log(err);
+  }
+  // numAffected is the number of updated documents
+}
+
+
+async function testLocal(res){
+  try {
+    const url = await urlModel.find();
+    console.log(` ${url}`);
+    res.json(url);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({message: error.message});
+  }
+}
+
+
+
+
+// ______________________ express
 
 const express = require ('express');
 const app = express();
 app.use( bodyParser.json() );       // to support JSON-encoded bodies
 app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
   extended: true
-})); 
+}));
+
+
+
 
 // log every request
 app.use((req, res, next) => {
   console.log(`request logger: req path is ${req.url}`);
   //console.log(Date(new Date().getTime()));
-  console.log(dateFormat(new Date(), "dd/mm/yy, hh:mm:ss TT"));
+  console.log(dayjs().format('DD/MM/YY, hh:mm:ss A, UTC Z'));
   next();
 });
 
@@ -26,41 +115,34 @@ app.use((req, res, next) => {
 //static folder
 app.use(express.static("public"));
 
-app.post('/submit', function(req, res){ 
-  res.sendFile(`${__dirname}/public/sucess.html`);
-  console.log('post submit is requested');   
+
+
+
+
+// ______________________ POST router
+app.post('/submit', function(req, res){
+  console.log('post submit is requested');
   console.log(req.body);
   const data = req.body;
-  data.timestamp= dateFormat(new Date(), "dd/mm/yy, hh:mm:ss TT");
+  data.timestamp= dayjs().format('DD/MM/YY, hh:mm:ss A, UTC Z');
+  const testingData= database.collection( 'url' ).find({}).toArray(function(err, docs) {
+  console.log(docs.length);
+  docs.forEach(element => console.log(element.endUrl));
 
-  //DB
-  const uri =
-  "mongodb+srv://"+ process.env.USER+ ":" +
-  process.env.DB_PASSWORD +
-  "@" +
-  process.env.DB_HOST +
-  "/" +
-  process.env.DB_NAME +
-  "?retryWrites=true&w=majority";
-  console.log(`uri is ${uri}`);
-const client = new mongodb.MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:true });
 
-console.log('trying to connect');
-client.connect(async (err, dbb) => {
-  if (err) throw err;
-  console.log('connected to db');
-  let url_shortener = client.db("url_shortener");
-  let url = await url_shortener.collection("url").insertOne(data);
+
+  let url = database.collection("url").insertOne(data);
   console.log('data succesfully inserted');
   //await cursor.forEach(console.dir);
-  client.close();
+  res.sendFile(`${__dirname}/public/sucess.html`);
+
 
   });
 });
 
 
 function generateURL(){
-  let url;   
+  let url;
   let fd = fs.readFileSync("./currentRandom.txt", "utf-8", (err, data) =>{
     if(err){
       console.log(err);
@@ -78,10 +160,13 @@ function generateURL(){
   //fs.writeFileSync("/currentRandom", url);
   return fd;
 }
+
 app.post("/test", (req,res)=>{
-  console.log(generateURL());
-  res.redirect('/');
-  res.end();
+  testLocal(res);
+
+  // console.log(generateURL());
+  // res.redirect('/');
+  // res.end();
 });
 
 app.get("/submit", (req, res) => {
@@ -93,32 +178,29 @@ app.get("/submit", (req, res) => {
 
 
 
-//Database 
-//
+// TODO: testing router file
 const registerRouter = require('./routes/register');
 app.use('/register', registerRouter);
 
 
 
-// listen for requests 
+// listen for requests
 const listener = app.listen(process.env.PORT, () => {
     console.log(`Your app is listening on port ${listener.address().port}`);
+    console.log(dayjs().format('DD/MM/YY, hh:mm:ss A, UTC Z'));
 });
 
+process.on('SIGINT', function() {
+  mongoose.connection.close(function () {
+    console.log('Mongoose disconnected on app termination');
+    process.exit(0);
+  });
+});
 
 /*
-// nodejs server without express
-http.createServer(function (req, res) {
-  const q = url.parse(req.url, true);
-  const filename = "." + q.pathname;
-  fs.readFile(filename, function(err, data) {
-    if (err) {
-      res.writeHead(404, {'Content-Type': 'text/html'});
-      return res.end("404 Not Found");
-    } 
-    res.writeHead(200, {'Content-Type': 'text/html'});
-    res.write(data);
-    return res.end();
-  });
-}).listen(8080); 
+
+
+
+
+
 */
