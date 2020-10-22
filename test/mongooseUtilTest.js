@@ -6,7 +6,6 @@ var assert = require('chai').assert;
 var expect = require('chai').expect;
 const testdata = new urlModel ({endUrl: "www.example.com/123", shortUrl:"/mon", owner:"mongooseUtilsTest"});
 
-
 describe('mongoose db test', function() {
 
   context('without arguments', function() {
@@ -45,7 +44,6 @@ describe('mongoose db test', function() {
     it('should return value equal to testdata', (done) => {
       async function test(){
         //create
-        console.log('1')
         try {
           const urlList = await urlModel.findOne({owner:"mongooseUtilsTest"});
           console.log(`end url  is ${urlList}`);
@@ -70,11 +68,4 @@ describe('mongoose db test', function() {
     });
   });
 
-
-
-
 });
-
-// connect to server
-
-//testing db

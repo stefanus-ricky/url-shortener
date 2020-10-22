@@ -36,6 +36,4 @@ const urlSchema = new mongoose.Schema({
 
 });
 urlSchema.plugin(beautifyUnique);
-
-// const testdata {endUrl: "www.wot.wot", shortUrl:"/wot", owner:"testo"}
 module.exports = mongoose.model('url', urlSchema);

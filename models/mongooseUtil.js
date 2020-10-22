@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 require('dotenv').config();
 const localUrl = process.env.DB_LOCAL;
 
-
+//url builder using dotenv variable
 const onlineUrl =
 "mongodb+srv://"+ process.env.USER+ ":" +
 process.env.DB_PASSWORD +
@@ -13,7 +13,7 @@ process.env.DB_NAME +
 "?retryWrites=true&w=majority";
 
 let mongooseDB;
-console.log(`loading mongoose utils`);
+// console.log(`loading mongoose utils`);
 
 // fix deprecated method warning
 mongoose.set('useNewUrlParser', true);
@@ -21,7 +21,6 @@ mongoose.set('useFindAndModify', false);
 mongoose.set('useCreateIndex', true);
 
 module.exports = {
-
     connectToServer: function(callback) {
         // console.log(`mongoose utils trying to connect`);
         mongoose.connect(localUrl,  {useUnifiedTopology: true, useNewUrlParser: true}, function( err, client ) {
@@ -32,7 +31,6 @@ module.exports = {
         return callback( err );
       });
     },
-    
     // to use connection write this
     // mongoose.connection = mongooseUtil.getDb(); 
     getDb: function() {
