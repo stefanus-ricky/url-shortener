@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
-
+const beautifyUnique = require('mongoose-beautiful-unique-validation');
+// Enable beautifying on this schema
 
 // TODO: implement url validation
 const urlSchema = new mongoose.Schema({
@@ -34,5 +35,7 @@ const urlSchema = new mongoose.Schema({
     }
 
 });
+urlSchema.plugin(beautifyUnique);
+
 // const testdata {endUrl: "www.wot.wot", shortUrl:"/wot", owner:"testo"}
 module.exports = mongoose.model('url', urlSchema);

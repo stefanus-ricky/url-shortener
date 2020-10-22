@@ -1,49 +1,32 @@
 const fs = require('fs');
 require('dotenv').config();
 const bodyParser = require('body-parser');
-
-const mongodb = require("mongodb");
-
-const mongoUtil= require('./models/mongoUtil');
-let database;
 const dayjs = require('dayjs');
-// mongoUtil.connectToServer( function( err, client ) {
-//   if (err) console.log(err);
-//   database = mongoUtil.getDb();
-//     const testingData= database.collection( 'url' ).find({}).toArray(function(err, docs) {
-//     console.log(docs.length);
-//     docs.forEach(element => console.log(element.endUrl));
-//   });
-//   // start the rest of your app here
-// } );
+// const mongodb = require("mongodb");
+// const mongoUtil= require('./models/mongoUtil');
 
 
 
-// ______________________ mongoose
 
-// const mongoose = require('mongoose');
-// const urlModel = require('./models/urlSchema');
-// const localUrl = process.env.DB_LOCAL;
-// mongoose.connect(localUrl,  { 
-//   useUnifiedTopology: true,  
-//   useNewUrlParser: true  
-// });
-// const mongooseDB= mongoose.connection;
-// mongooseDB.on('error', (err)=>console.error(err));
-// mongooseDB.once('open', ()=> console.log(`connected to database`));
 
+
+
+
+let database;
 const mongoose = require('mongoose');
 const urlModel = require('./models/urlSchema');
 const mongooseUtil = require('./models/mongooseUtil');
 
-mongooseUtil.connectToServer(function( err, client ) {
+// connect to server
+mongooseUtil.connectToServer(function( err ) {
     if (err) console.log(err);
-    // start the rest of your app here
   });
+// get db
 mongoose.connection = mongooseUtil.getDb();
+
+//testing db
 const testdata = new urlModel ({endUrl: "www.example.com/1", shortUrl:"/exam1"});
- 
-async function addTest(){
+async function dbTest(){
   //create
   try {
     await testdata.save();
@@ -54,42 +37,37 @@ async function addTest(){
   try {
     await urlModel.find({endUrl: testdata.endUrl});
     console.log(`url = ${testdata.shortUrl}`);
-
-
     const conditions = { endUrl: testdata.endUrl };
     const update = { shortUrl : "/exam21"};
     const options = { multi: true };
-
-    urlModel.updateOne(conditions, update, options, callback);
-
-
+    urlModel.updateOne(conditions, update, options, logError);
     console.log(`test data updated`);
   } catch (err) { console.log(err);}
-  // read
+
+  // read, shorturl:/exam21 if suceed
   try {
     const urlList = await urlModel.find({});
     console.log(`url list is ${urlList}`);
   } catch (err) { console.log(err);}
+
   // delete
   try {
-    await urlModel.deleteOne({ owner:'testo' } , callback);
+    await urlModel.deleteOne({ shortUrl : "/exam21" } , logError);
     console.log(`data deleted`);
   } catch (err) { console.log(err);}
+
   // read again to confirm delete
   try {
     const urlList = await urlModel.find({});
     console.log(`url list is ${urlList}`);
   } catch (err) { console.log(err);}
-
-
 }
-addTest();
+// dbTest();
 
-function callback (err) {
+function logError (err) {
   if(err) {
     console.log(err);
   }
-  // numAffected is the number of updated documents
 }
 
 
@@ -107,6 +85,19 @@ async function testLocal(res){
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
 // ______________________ express
 
 const express = require ('express');
@@ -117,19 +108,19 @@ app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
 }));
 
 
+//static folder
+app.use(express.static("public"), (req,res, next) =>{
+  next();
+});
+
 
 
 // log every request
 app.use((req, res, next) => {
   console.log(`request logger: req path is ${req.url}`);
-  //console.log(Date(new Date().getTime()));
   console.log(dayjs().format('DD/MM/YY, hh:mm:ss A, UTC Z'));
   next();
 });
-
-
-//static folder
-app.use(express.static("public"));
 
 
 
@@ -151,12 +142,12 @@ app.post('/submit', function(req, res){
   console.log('data succesfully inserted');
   //await cursor.forEach(console.dir);
   res.sendFile(`${__dirname}/public/sucess.html`);
-
-
   });
 });
 
+console.log(__dirname);
 
+// generate next random url if shortUrl not requested
 function generateURL(){
   let url;
   let fd = fs.readFileSync("./currentRandom.txt", "utf-8", (err, data) =>{
@@ -197,6 +188,7 @@ app.get("/submit", (req, res) => {
 // TODO: testing router file
 const registerRouter = require('./controller/register');
 app.use('/register', registerRouter);
+
 
 
 
