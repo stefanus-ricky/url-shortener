@@ -35,15 +35,6 @@ app.use((req, res, next) => {
   next();
 });
 
-// ______________________ POST router
-app.post('/submit', function(req, res){
-  console.log('post submit is requested');
-  console.log(req.body);
-  const data = req.body;
-  data.timestamp= dayjs().format('DD/MM/YY, hh:mm:ss A, UTC Z');
-
-});
-
 // generate next random url if shortUrl not requested
 function generateURL(){
   let url;
@@ -73,13 +64,9 @@ app.post("/test", (req,res)=>{
   // res.end();
 });
 
-app.get("/submit", (req, res) => {
-    res.sendFile(`${__dirname}/public/sucess.html`);
-    console.log('submit is requested');
-    console.log(req.query['ori-url']);
-    console.log(req.query);
-});
-
+// ROUTER
+const submitRouter = require('./controller/submit');
+app.use('/submit', submitRouter);
 // TODO: testing router file
 const registerRouter = require('./controller/register');
 app.use('/register', registerRouter);

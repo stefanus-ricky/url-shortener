@@ -7,7 +7,6 @@ const urlSchema = new mongoose.Schema({
     'endUrl':{
         type: String,
         required: true,
-        unique: true,
         trim: true,
         validate(value) {
             // implement url validation
@@ -17,6 +16,7 @@ const urlSchema = new mongoose.Schema({
     'shortUrl':{
         type: String, 
         required: true,
+        unique: true,
         trim: true,
         validate(value) {
             // implement url validation
@@ -24,7 +24,7 @@ const urlSchema = new mongoose.Schema({
         }
     },
     'timestamp': {
-        type: Date,
+        type: String,
         required: true,
         default: Date.now()
     },
