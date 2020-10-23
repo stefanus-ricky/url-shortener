@@ -23,11 +23,6 @@ app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
   extended: true
 }));
 
-//static folder
-app.use(express.static("public"), (req,res, next) =>{
-  next();
-});
-
 // log every request
 app.use((req, res, next) => {
   console.log(`request logger: req path is ${req.url}`);
@@ -58,7 +53,6 @@ function generateURL(){
 
 app.post("/test", (req,res)=>{
   testLocal(res);
-
   // console.log(generateURL());
   // res.redirect('/');
   // res.end();
@@ -70,6 +64,13 @@ app.use('/submit', submitRouter);
 // TODO: testing router file
 const registerRouter = require('./controller/register');
 app.use('/register', registerRouter);
+
+
+//static folder
+app.use(express.static("public"), (req,res, next) =>{
+  console.log(`static file requested ${req.url}`);
+  next();
+});
 
 // listen for requests
 const listener = app.listen(process.env.PORT, () => {

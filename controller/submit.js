@@ -4,7 +4,6 @@ const dayjs = require('dayjs');
 const mongoose = require('mongoose');
 const mongooseUtil = require("../models/mongooseUtil");
 const urlModel = require('../models/urlSchema');
-const path = require('path');
 
 // ______________________ POST router
 router.post('/', function(req, res){
@@ -21,12 +20,12 @@ router.post('/', function(req, res){
       try {
         await newdata.save();
         console.log('data succesfully inserted');
-        // res.sendFile(path.join(__dirname, '../public', 'sucess.html'));
-        res.redirect('/sucess.html');
+        res.redirect('/success.html');
         res.end();
       } catch (err) { 
-        res.sendFile(path.join(__dirname, '../public', 'error.html'));
         console.log(err);
+        res.redirect('/failed.html');
+        res.end();
       }
     })();
   });

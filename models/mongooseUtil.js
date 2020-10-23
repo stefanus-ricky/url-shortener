@@ -3,6 +3,8 @@ require('dotenv').config();
 const localUrl = process.env.DB_LOCAL;
 
 //url builder using dotenv variable
+// const onlineUrl = "mongodb+srv://user:pass@hostname/dbname?retryWrites=true&w=majority"
+
 const onlineUrl =
 "mongodb+srv://"+ process.env.USER+ ":" +
 process.env.DB_PASSWORD +
