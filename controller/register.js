@@ -5,7 +5,7 @@ const mongoose = require('mongoose');
 const mongooseUtil = require("../models/mongooseUtil");
 const userModel = require('../models/userSchema');
 const path = require('path');
-
+const bcrypt = require('bcrypt');
 
 
 // ______________________ POST router
@@ -21,6 +21,8 @@ router.post('/', function(req, res){
 
     (async function () {
       try {
+        newdata.password = await bcrypt.hash(req.body.password, 10); 
+        console.log(`hashed pass is ${newdata.password}`);
         await newdata.save();
         console.log('username succesfully inserted');
         res.redirect('/register/success.html');

@@ -2,31 +2,79 @@ const fs = require('fs');
 require('dotenv').config();
 const bodyParser = require('body-parser');
 const dayjs = require('dayjs');
+
+// express
+const express = require ('express');
+const app = express();
+const session = require('express-session');
+const flash = require('express-flash');
+const path = require('path');
+
 // db
 const mongoose = require('mongoose');
 const urlModel = require('./models/urlSchema');
 const mongooseUtil = require('./models/mongooseUtil');
-// express
-const express = require ('express');
-const app = express();
+const MongoStore = require('connect-mongo')(session);
 
+const { send } = require('process');
+const { initialize } = require('passport');
 
-// connect to server
+const morgan = require ('morgan');
+const passport = require('passport');
+const initializePassport = require('./passport-config');
+initializePassport (
+  passport,
+  email => req.body.email
+);
+
+app.use(bodyParser.json() );       // to support JSON-encoded bodies
+app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
+  extended: true
+}));
+
+app.use(flash());
+app.use(session({
+  secret:process.env.SECRET,
+  resave: false,
+  saveUninitialized:false,
+  store: new MongoStore ({mongooseConnection:mongoose.connection})
+}));
+
+//  ___________________________________________________ PASSPORT 
+// passport
+app.use(passport.initialize());
+app.use(passport.session());
+// app.use(passport.initialize());
+
+// router
+const submitRouter = require('./controller/submit');
+const urlAppsRouter = require('./controller/urlApps');
+const loginRouter = require('./controller/login');
+const registerRouter = require('./controller/register');
+
+// connect to server 
 mongooseUtil.connectToServer(function( err ) {
     if (err) console.log(err);
   });
 // get db
 mongoose.connection = mongooseUtil.getDb();
 
-app.use( bodyParser.json() );       // to support JSON-encoded bodies
-app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
-  extended: true
-}));
 
+
+// MORGAN logger
+// create a write stream with a(append) mode
+var accessLogStream = fs.createWriteStream(path.join(__dirname, 'access.log'), { flags: 'a' });
+// setup the logger
+app.use(morgan('combined', { stream: accessLogStream }));
+
+
+let count = 1;
 // log every request
 app.use((req, res, next) => {
-  console.log(`request logger: req path is ${req.url}`);
-  console.log(dayjs().format('DD/MM/YY, hh:mm:ss A, UTC Z'));
+  console.log(`${count}. request logger: req path is ${req.url}`);
+  console.log(dayjs().format('    hh:mm:ss A'));
+  // console.log(dayjs().format('DD/MM/YY, hh:mm:ss A, UTC Z'));
+  count++;
   next();
 });
 
@@ -59,18 +107,31 @@ app.post("/test", (req,res)=>{
 });
 
 // ROUTER
-const submitRouter = require('./controller/submit');
+
 app.use('/submit', submitRouter);
 // TODO: testing router file
-const registerRouter = require('./controller/register');
+
 app.use('/register', registerRouter);
+app.use('/login', loginRouter);
 
-
-//static folder
-app.use(express.static("public"), (req,res, next) =>{
-  console.log(`static file requested ${req.url}`);
+app.use(express.static("public"));
+// check unknown url from database
+// app.use("*", urlAppsRouter);
+app.use('/url/:id', urlAppsRouter, (req, res, next)=>{
   next();
 });
+
+app.use('/', (req, res) => {
+  res.status(404).sendFile(path.join(__dirname, './public/pagenotfound.html'));
+});
+ 
+
+//static folder
+// app.use(express.static("public"), (req,res, next) =>{
+//   console.log(`static file requested ${req.url}`);
+//   next();
+// });
+
 
 // listen for requests
 const listener = app.listen(process.env.PORT, () => {
@@ -84,11 +145,3 @@ process.on('SIGINT', function() {
     process.exit(0);
   });
 });
-
-/*
-
-
-
-
-
-*/
