@@ -44,9 +44,8 @@ app.use(session({
 // passport
 app.use(passport.initialize());
 app.use(passport.session());
-// app.use(passport.initialize());
 
-// router
+// routes, add after passport init
 const submitRouter = require('./controller/submit');
 const urlAppsRouter = require('./controller/urlApps');
 const loginRouter = require('./controller/login');
@@ -59,17 +58,14 @@ mongooseUtil.connectToServer(function( err ) {
 // get db
 mongoose.connection = mongooseUtil.getDb();
 
-
-
 // MORGAN logger
 // create a write stream with a(append) mode
 var accessLogStream = fs.createWriteStream(path.join(__dirname, 'access.log'), { flags: 'a' });
 // setup the logger
 app.use(morgan('combined', { stream: accessLogStream }));
 
-
-let count = 1;
 // log every request
+let count = 1;
 app.use((req, res, next) => {
   console.log(`${count}. request logger: req path is ${req.url}`);
   console.log(dayjs().format('    hh:mm:ss A'));
