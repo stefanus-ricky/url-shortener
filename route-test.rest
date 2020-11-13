@@ -6,6 +6,7 @@ GET http://localhost:3000/index.html HTTP/1.1
 
 ###
 GET http://localhost:3000/views/index.html HTTP/1.1
+
 ### 
 // posting url
 POST http://localhost:3000/submit 
@@ -30,6 +31,16 @@ Content-Type: application/json
 
 ###
 // login user
+
+POST http://localhost:3000/login HTTP/1.1
+Content-Type: application/json
+
+{
+    "email": "pepe@froge.com",
+    "password": "asdfqwqe"
+}
+###
+// login user with wrong pass
 
 POST http://localhost:3000/login HTTP/1.1
 Content-Type: application/json

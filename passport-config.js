@@ -1,6 +1,5 @@
 const LocalStrat = require('passport-local').Strategy;
 const bcrypt = require('bcrypt');
-const express = require('express');
 const userModel= require('./models/userSchema');
 
 function initialize(passport, email){
@@ -14,14 +13,14 @@ function initialize(passport, email){
             return done(null, false, {message:"User not found"});
         } 
         try {
-            console.log([user.password, password]);
-            if (await bcrypt.compare( password,user.password) ) {
+            console.log([password, user.password]);
+            if (await bcrypt.compare( password, user.password) ) {
                 // found user
                 console.log(`user found`);
                 return done(null, user);
 
             } else {
-                console.log(`user not found`)
+                console.log(`user not found`);
                 // user found, password not match
                 return done(null, false, {message: "Wrong password, try again"});
             }
@@ -32,12 +31,21 @@ function initialize(passport, email){
     passport.use(new LocalStrat({usernameField: 'email', passwordField:'password'}, authenticateUser));
 
     passport.serializeUser((user, done) =>{
+        console.log(`serialize user ${user.email}`);
         done (null, user.id);
     });
     passport.deserializeUser((id, done) => {
-        userModel.findById(id).then((err, user) => {
+        userModel.findById(id, (err, user) => {
+            console.log(`deserialize user ${user}`);
             done (err, user);
         });
     });
+
+
+    // function isAuthenticated(req, res, next) {
+    //     if (req.isAuthenticated())
+    //         return next();
+    //     res.redirect('/login');
+    // }
 }
 module.exports=initialize;

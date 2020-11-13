@@ -1,51 +1,27 @@
 const express = require ('express');
 const router = express.Router();
-const mongoose = require('mongoose');
-const mongooseUtil = require("../models/mongooseUtil");
-const userModel = require('../models/userSchema');
 const path = require('path');
-const bcrypt = require('bcrypt');
-const passport = require('passport')
-
-
+const passport = require('passport');
 // authenticate using passport
 router.post('/', passport.authenticate('local', {
   successRedirect: '/',
   failureRedirect: '/login'
 }));
 
+// router.post('/', (req,res, next) =>{
+//   console.log(`login post`);
+//   passport.authenticate('local', function(err, user, info) {
+//     console.log(`auth`)
+//     if (err) { return next(err); }
+//     if (!user) { return res.redirect('/loginnn'); }
+//     req.logIn(user, function(err) {
+//       if (err) { return next(err); }
+//       return res.redirect('/indexxx.html');
+//     });
+//   })(req, res, next);
+// });
 
-// retrieve login using mongoose
-// ______________________ POST router
-// router.post('/', function(req, res){
-//     console.log('user trying to login');
-//     console.log(req.body);
-//     const data = req.body;
-//     console.log(`userdata is ${data}`);
-//     mongoose.connection = mongooseUtil.getDb();
 
-//     (async function () {
-//       try {
-//         const user = await userModel.findOne({email:data.email});
-//         console.log(`user found, pass is ${user.password}`);
-
-//         //authenticate
-
-//         // Load hash from your password DB.
-//         bcrypt.compare(data.password, user.password, function(err, result) {
-//           // result == true
-//           console.log(`match`);
-//           res.redirect('/login/success.html');
-//           res.end();
-//         });
-
-//       } catch (err) { 
-//         console.log(err);
-//         res.redirect('/login/failed.html');
-//         res.end();
-//       }
-//     })();
-//   });
 
 router.get('/', (req,res) => {
     console.log('login router get');
@@ -53,5 +29,20 @@ router.get('/', (req,res) => {
     console.log(path.join(__dirname, '../public/login/index.html'));
     // res.redirect('/');
 });
+
+
+function isAuthenticated(req, res, next) {
+  if (req.isAuthenticated()){
+    return next();
+  }
+  res.redirect('/login');
+}
+
+function isNotAuthenticated(req, res, next){
+if (!req.isAuthenticated()){
+  return next();
+}
+res.redirect('/');
+}
 
 module.exports = router;

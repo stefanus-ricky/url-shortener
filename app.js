@@ -40,31 +40,37 @@ app.use(session({
   store: new MongoStore ({mongooseConnection:mongoose.connection})
 }));
 
-//  ___________________________________________________ PASSPORT 
-// passport
+
+//
+// PASSPORT
+// -----------------------------------------------------------------------------
 app.use(passport.initialize());
 app.use(passport.session());
 
-// routes, add after passport init
+//
+// database initialization
+// -----------------------------------------------------------------------------
+mongooseUtil.connectToServer(function( err ) {
+  if (err) console.log(err);
+});
+mongoose.connection = mongooseUtil.getDb();
+
+//
+// import routes module
+// -----------------------------------------------------------------------------
 const submitRouter = require('./controller/submit');
 const urlAppsRouter = require('./controller/urlApps');
 const loginRouter = require('./controller/login');
 const registerRouter = require('./controller/register');
 
-// connect to server 
-mongooseUtil.connectToServer(function( err ) {
-    if (err) console.log(err);
-  });
-// get db
-mongoose.connection = mongooseUtil.getDb();
 
-// MORGAN logger
-// create a write stream with a(append) mode
+//
+// access logger
+// -----------------------------------------------------------------------------
 var accessLogStream = fs.createWriteStream(path.join(__dirname, 'access.log'), { flags: 'a' });
-// setup the logger
-app.use(morgan('combined', { stream: accessLogStream }));
+app.use(morgan('dev', { stream: accessLogStream }));
 
-// log every request
+// console log 
 let count = 1;
 app.use((req, res, next) => {
   console.log(`${count}. request logger: req path is ${req.url}`);
@@ -102,11 +108,14 @@ app.post("/test", (req,res)=>{
   // res.end();
 });
 
-// ROUTER
-
+//
+// activate router
+// -----------------------------------------------------------------------------
+app.get('/logout', function(req, res){
+  req.logout();
+  res.redirect('/');
+});
 app.use('/submit', submitRouter);
-// TODO: testing router file
-
 app.use('/register', registerRouter);
 app.use('/login', loginRouter);
 
@@ -117,10 +126,18 @@ app.use('/url/:id', urlAppsRouter, (req, res, next)=>{
   next();
 });
 
+app.post('/login', (req,res)=>{
+  console.log('wtf');
+})
+
+//
+// 404 router
+// -----------------------------------------------------------------------------
 app.use('/', (req, res) => {
+  console.log(`cannot find this request ${req.url}`)
   res.status(404).sendFile(path.join(__dirname, './public/pagenotfound.html'));
 });
- 
+
 
 //static folder
 // app.use(express.static("public"), (req,res, next) =>{
@@ -129,7 +146,30 @@ app.use('/', (req, res) => {
 // });
 
 
-// listen for requests
+
+
+
+// authentication 
+// -----------------------------------------------------------------------------
+// function isAuthenticated(req, res, next) {
+//     if (req.isAuthenticated()){
+//       return next();
+//     }
+//     res.redirect('/login');
+// }
+
+// function isNotAuthenticated(req, res, next){
+//   if (!req.isAuthenticated()){
+//     return next();
+//   }
+//   res.redirect('/');
+// }
+
+
+//
+// starting server
+// -----------------------------------------------------------------------------
+// 
 const listener = app.listen(process.env.PORT, () => {
     console.log(`Your app is listening on port ${listener.address().port}`);
     console.log(dayjs().format('DD/MM/YY, hh:mm:ss A, UTC Z'));
