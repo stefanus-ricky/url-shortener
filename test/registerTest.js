@@ -24,7 +24,7 @@ describe('mongoose user register test', function() {
     });
   });
 
-  context('find the user', () => {
+  context('finding user', () => {
     it('should return be no error if the test run second time', (done) => {
       async function test () {
         try {
@@ -54,7 +54,7 @@ describe('mongoose user register test', function() {
   });
 
   context('register new user', () => {
-    it('should return be no error', (done) => {
+    it('should return no error', (done) => {
       async function test () {
         try {
             await testUser.save();
@@ -80,9 +80,8 @@ describe('mongoose user register test', function() {
                 expect(false).to.equal(true);
                 done();        
             } catch (err) { 
-                console.log(err);
-                expect(err).to.equal(!null);
-                throw err;
+                expect(err._message).to.equal('Validation failed');
+                done();
             }
           }
           test();
