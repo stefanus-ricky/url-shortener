@@ -30,7 +30,7 @@ mongoose.set('useCreateIndex', true);
 
 module.exports = {
     connectToServer: function(callback) {
-        mongoose.connect(localUrl,  {useUnifiedTopology: true, useNewUrlParser: true}, function( err, client ) {
+        mongoose.connect(usedUrl,  {useUnifiedTopology: true, useNewUrlParser: true}, function( err, client ) {
         mongooseDB = mongoose.connection;
         mongooseDB.on('error', (err) => console.error(err) );
         mongooseDB.once('open', () => console.log(`Connecting to mongodb database: ${process.env.DB_NAME}`));
