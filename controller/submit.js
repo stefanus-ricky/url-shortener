@@ -10,6 +10,8 @@ router.post('/', function(req, res){
     console.log('post submit is requested');
     console.log(req.body);
     const data = req.body;
+    // check if url valid
+
     data.timestamp= dayjs().format('DD/MM/YY, hh:mm:ss A, UTC Z');
     console.log(`data is ${data}`);
     const newdata = new urlModel (data);

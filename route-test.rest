@@ -1,4 +1,4 @@
-GET http://localhost:3000/ HTTP/1.1
+GET http://localhost:3000/u/sadge HTTP/1.1
 
 
 ###
@@ -13,8 +13,8 @@ POST http://localhost:3000/submit
 Content-Type: application/json
 
 {
-    "ori-url": "www.foobar.foo/sadgebar",
-    "short-url": "/sadge"
+    "endUrl": "www.foobar.foo/sadgebar",
+    "shortUrl": "sadge"
 }
 
 ###

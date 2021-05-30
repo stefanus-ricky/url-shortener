@@ -122,7 +122,7 @@ app.use('/login', loginRouter);
 app.use(express.static("public"));
 // check unknown url from database
 // app.use("*", urlAppsRouter);
-app.use('/url/:id', urlAppsRouter, (req, res, next)=>{
+app.use('/:id', urlAppsRouter, (req, res, next)=>{
   next();
 });
 

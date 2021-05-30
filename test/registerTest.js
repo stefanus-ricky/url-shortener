@@ -76,7 +76,7 @@ describe('mongoose user register test', function() {
                 const testUser2 = new userModel ({username: "hey123", password:"qwert123", email:"hey@gmail.com"});
                 await testUser1.save();
                 await testUser2.save();
-                console.log(`err, shoundt be success`);
+                console.log(`err, shouldn't be success`);
                 expect(false).to.equal(true);
                 done();        
             } catch (err) { 

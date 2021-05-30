@@ -24,7 +24,7 @@ router.post('/', passport.authenticate('local', {
 
 
 router.get('/', (req,res) => {
-    console.log('login router get');
+    // console.log('login router get');
     res.status(200).sendFile(path.join(__dirname, '../public/login/index.html'));
     console.log(path.join(__dirname, '../public/login/index.html'));
     // res.redirect('/');

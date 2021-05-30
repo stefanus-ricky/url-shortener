@@ -24,7 +24,7 @@ describe('mongoose db test', function() {
     });
   });
 
-  context('testing create', () => {
+  context('saving new data', () => {
     it('should return be no error', (done) => {
       async function test () {
         try {
@@ -33,14 +33,14 @@ describe('mongoose db test', function() {
           done();        
         } catch (err) { 
           console.log(err);
+          // expect(err).to.equal(null);
         }
-        // expect(err).to.equal(null);
       }
       test();
     });
   });
 
-  context('testing read', () => {
+  context('read data', () => {
     it('should return value equal to testdata', (done) => {
       async function test(){
         //create
@@ -56,7 +56,7 @@ describe('mongoose db test', function() {
     });
   });
 
-  context('testing delete', () => {
+  context('deleting data', () => {
     it('should delete the data', (done) => {
       async function test(){
         try {

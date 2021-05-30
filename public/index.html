@@ -1,36 +1,95 @@
 <html>
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
+  <head>
+      <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+      <title>Url shortener</title>
+      <!-- jquery -->
+      <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
     
-        <title>Url shortener</title>
-        <!-- import the webpage's stylesheet -->
-        <link rel="stylesheet" href="/style.css">
-        <!-- import the webpage's javascript file -->
-        <script src="/script.js" defer></script>
-      </head>  
-    <body>
-      <nav>
-        <a href="/register">Register</a>
-      </nav>
+      <!-- FontAwesome -->
+      <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+    
+    
+      <!-- CSS only -->
+      <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+      <!-- Latest compiled and minified JavaScript -->
+      <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+      <!-- import the webpage's stylesheet -->
+      <link rel="stylesheet" href="/style.css">
+      <!-- import the webpage's javascript file -->
+      <script src="/script.js" defer></script>
+    </head>  
 
 
 
-    <h1>Url shortener</h1>
-    <p>Shorten your url here</p>
-    
-    <form action="/submit" method="post">
-        <label for="endUrl">Your url:</label>
-        <input type="text" id="endUrl" name="endUrl"><br><br>
-        <label for="shortUrl">Request shorten url:</label>
-        <input type="text" id="shortUrl" name="shortUrl"><br><br>
-        <input type="submit" value="urlShortener">
-    </form> 
-    <form action="/test" method="post">
-      <input type="submit" id="testid" name="testname" value="testing function"><br><br>
-    </form> 
+
+
+
+
+
+  <body>
     
     
-    </body>
-    </html> 
+  <!-- Navbar -->
+    <nav class="navbar navbar-default">
+      <!-- Container -->
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <a class="navbar-brand" href="#">Url shortener</a>
+        </div>
+        <!-- Section: List -->
+        <ul class="nav nav-pills nav-fill">
+          <li class="nav-item active">
+            <a class="nav-link" href="#">Shorten url</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="./login">Login</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="./register">Sign up</a>
+          </li>
+
+        </ul>
+        <!-- Section: List -->
+      </div>
+      <!-- Container -->
+    </nav>
+    <!-- Navbar -->
+
+
+      <!-- Custom Shorten -->
+      <div class="url-shortener-text">Shorten your url here</div>
+      <div class="url-shortener-container container-fluid">
+        <form class="url-form" action="/submit" method="post">
+          <label class="url-label" for="endUrl">Url:</label>
+          <input class="url-input" type="text" id="endUrl" name="endUrl" placeholder="www.example.com"><br><br>
+          <label class="url-label" for="shortUrl">Custom url:</label>
+          <input class="url-input" type="text" id="shortUrl" name="shortUrl" placeholder="shortur.xyz/custom-url"><br><br>
+          <input class="submit-button btn btn-primary "type="submit" value="Shorten">
+      </form> 
+      </div>
+      <!-- Custom Shorten -->
+
+      <!---- Random Shorten ->
+      <div class="url-shortener-text">Shorten your url here</div>
+      <div class="url-shortener-container container-fluid">
+        <div class="container-fluid ">
+          <form class="url-form container-lg justify-content-center" action="/submit" method="post">
+            <label class="url-label" for="endUrl">Url:</label>
+            <input class="url-input" type="text" id="endUrl" name="endUrl" placeholder="www.example.com"><br><br>
+            <input type="submit" value="Shorten">
+          </form>
+        </div>
+      </div>
+      <!- Random Shorten -->
+
+
+
+
+
+  
+  
+</body>
+</html> 

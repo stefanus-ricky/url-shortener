@@ -1,4 +1,6 @@
 const mongoose = require('mongoose');
+const { on } = require('nodemon');
+const nodemon = require('nodemon');
 require('dotenv').config();
 const localUrl = process.env.DB_LOCAL;
 
@@ -14,8 +16,12 @@ process.env.DB_HOST +
 process.env.DB_NAME +
 "?retryWrites=true&w=majority";
 
+let usedUrl = localUrl;
+if(process.env.NODE_ENV == "production"){
+  usedUrl = onlineUrl;  
+}
+
 let mongooseDB;
-// console.log(`loading mongoose utils`);
 
 // fix deprecated method warning
 mongoose.set('useNewUrlParser', true);
@@ -24,12 +30,10 @@ mongoose.set('useCreateIndex', true);
 
 module.exports = {
     connectToServer: function(callback) {
-        // console.log(`mongoose utils trying to connect`);
         mongoose.connect(localUrl,  {useUnifiedTopology: true, useNewUrlParser: true}, function( err, client ) {
         mongooseDB = mongoose.connection;
         mongooseDB.on('error', (err) => console.error(err) );
         mongooseDB.once('open', () => console.log(`Connecting to mongodb database: ${process.env.DB_NAME}`));
-        // console.log(`err is ${err} typeof err is ${typeof err}`);
         return callback( err );
       });
     },
