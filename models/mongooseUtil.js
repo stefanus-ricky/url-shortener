@@ -8,7 +8,7 @@ const localUrl = process.env.DB_LOCAL;
 // const onlineUrl = "mongodb+srv://user:pass@hostname/dbname?retryWrites=true&w=majority"
 
 const onlineUrl =
-"mongodb+srv://"+ process.env.USER+ ":" +
+"mongodb+srv://"+ process.env.DB_USER+ ":" +
 process.env.DB_PASSWORD +
 "@" +
 process.env.DB_HOST +
@@ -16,9 +16,12 @@ process.env.DB_HOST +
 process.env.DB_NAME +
 "?retryWrites=true&w=majority";
 
+console.log(`running in ${process.env.NODE_ENV} environtment` )
 let usedUrl = localUrl;
 if(process.env.NODE_ENV == "production"){
   usedUrl = onlineUrl;  
+console.log({usedUrl} )
+
 }
 
 let mongooseDB;
