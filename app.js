@@ -51,7 +51,7 @@ app.use(passport.session());
 // database initialization
 // -----------------------------------------------------------------------------
 mongooseUtil.connectToServer(function( err ) {
-  if (err) console.log(err);
+  if (err) console.error(err);
 });
 mongoose.connection = mongooseUtil.getDb();
 
@@ -73,8 +73,8 @@ app.use(morgan('dev', { stream: accessLogStream }));
 // console log 
 let count = 1;
 app.use((req, res, next) => {
-  console.log(`${count}. request logger: req path is ${req.url}`);
-  console.log(dayjs().format('    hh:mm:ss A'));
+  // console.log(`${count}. request logger: req path is ${req.url}`);
+  // console.log(dayjs().format('    hh:mm:ss A'));
   // console.log(dayjs().format('DD/MM/YY, hh:mm:ss A, UTC Z'));
   count++;
   next();
@@ -85,15 +85,15 @@ function generateURL(){
   let url;
   let fd = fs.readFileSync("./currentRandom.txt", "utf-8", (err, data) =>{
     if(err){
-      console.log(err);
+      console.error(err);
     }
   });
   console.log('read success');
   console.log(fd);
   fd ++;
   fs.writeFile("./currentRandom.txt", fd.toString(), (err) => {
-    if (err) console.log(err);
-    console.log("Successfully Written to File.");
+    if (err) console.error(err);
+    // console.log("Successfully Written to File.");
   });
   console.log(fd);
   //url = url+1;

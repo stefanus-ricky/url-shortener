@@ -11,14 +11,14 @@ mongoose.connection = mongooseUtil.getDb();
 
 
 router.get('/', (req,res) => {
-    console.log('url apps router get');
-    console.log(`req.baseUrl is ${req.baseUrl} `);
+    // console.log('url apps router get');
+    // console.log(`req.baseUrl is ${req.baseUrl} `);
     let query = req.baseUrl.split(/\//);
     let queryUrl = query[1];
     if(query[1] == "u" ){
         queryUrl = query[2];
     } 
-    console.log(`queryUrl is ${queryUrl} `);
+    // console.log(`queryUrl is ${ueryUrl} `);
 
 
     (async function(){ 
@@ -26,18 +26,18 @@ router.get('/', (req,res) => {
             const urlList = await urlModel.findOne({shortUrl: queryUrl});
             // const all = await urlModel.find();
             // console.log(all)
-            console.log(`shorturl is ${urlList} and end url  is ${urlList?.endUrl}`);
+            // console.log(`shorturl is ${urlList} and end url  is ${urlList.endUrl}`);
             if(urlList) {
                 res.status(301).redirect("http://"+ urlList.endUrl);
             } else {
                 res.status(404).sendFile(path.join(__dirname, '../public/pagenotfound.html'));
             }
         } catch (err) { 
-            console.log(err);
+            console.error(err);
         }
     })();
 
-    console.log(req.baseUrl);
+    // console.log(req.baseUrl);
     // res.redirect(req.baseUrl);
     // res.redirect('/');
 });
