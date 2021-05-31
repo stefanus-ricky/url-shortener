@@ -16,12 +16,9 @@ process.env.DB_HOST +
 process.env.DB_NAME +
 "?retryWrites=true&w=majority";
 
-console.log(`running in ${process.env.NODE_ENV} environtment` )
 let usedUrl = localUrl;
 if(process.env.NODE_ENV == "production"){
   usedUrl = onlineUrl;  
-console.log({usedUrl} )
-
 }
 
 let mongooseDB;
