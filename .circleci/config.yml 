@@ -1,5 +1,0 @@
-commands:
-  runtesting:
-    description: "Run the test"
-    steps:
-      - run: npm run test
