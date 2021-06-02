@@ -6,6 +6,7 @@ var assert = require('chai').assert;
 var expect = require('chai').expect;
 const { exists } = require("../models/urlSchema");
 const testdata = new urlModel ({endUrl: "www.example.com/123", shortUrl:"/mon", owner:"mongooseUtilsTest"});
+console.log(`testing in ${process.env.NODE_ENV} environment`)
 
 describe('mongoose db test', function() {
 
@@ -18,6 +19,7 @@ describe('mongoose db test', function() {
   context('connecting to database', () => {
     it('should return be no error', (done) => {
       mongooseUtil.connectToServer((err)=> {
+          console.log(err)
           expect(err).to.equal(null);
           done();
       });
