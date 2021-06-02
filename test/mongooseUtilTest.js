@@ -4,6 +4,7 @@ const urlModel = require('../models/urlSchema');
 
 var assert = require('chai').assert;
 var expect = require('chai').expect;
+const { exists } = require("../models/urlSchema");
 const testdata = new urlModel ({endUrl: "www.example.com/123", shortUrl:"/mon", owner:"mongooseUtilsTest"});
 
 describe('mongoose db test', function() {
@@ -46,8 +47,8 @@ describe('mongoose db test', function() {
         //create
         try {
           const urlList = await urlModel.findOne({owner:"mongooseUtilsTest"});
-          console.log(`end url  is ${urlList}`);
-          console.log(urlList.endUrl === "www.example.com/123");
+          // console.log(`end url  is ${urlList}`);
+          // console.log(urlList.endUrl === "www.example.com/123");
           expect(urlList.endUrl).to.equal("www.example.com/123");
           done();        
         } catch (err) { console.log(err);}
@@ -67,5 +68,6 @@ describe('mongoose db test', function() {
       test();
     });
   });
+  mongoose.connection.close();
 
 });

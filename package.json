@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "mocha",
+    "test": "mocha --exit",
     "dev": "nodemon app.js",
     "debug": "nodemon app.js --inspect=[localhost/inspect:8080]"
   },
