@@ -26,7 +26,7 @@ describe('mongoose db test', function() {
   });
 
   context('saving new data', () => {
-    it('should return be no error', (done) => {
+    it('should return no error', (done) => {
       async function test () {
         try {
           await testdata.save();
@@ -68,6 +68,5 @@ describe('mongoose db test', function() {
       test();
     });
   });
-  mongoose.connection.close();
 
 });
