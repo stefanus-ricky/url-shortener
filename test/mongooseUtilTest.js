@@ -17,15 +17,14 @@ describe('mongoose db test', function() {
   });
 
   context('connecting to database', () => {
-    it('should return be no error', (done) => {
-      this.timeout(4000);
+    it('should return no error', (done) => {
       mongooseUtil.connectToServer((err)=> {
           console.log(err)
           expect(err).to.equal(null);
           done();
       });
       mongoose.connection = mongooseUtil.getDb(); 
-    });
+    }).timeout(5000);;
   });
 
   context('saving new data', () => {
