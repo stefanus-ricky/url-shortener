@@ -18,6 +18,7 @@ describe('mongoose db test', function() {
 
   context('connecting to database', () => {
     it('should return be no error', (done) => {
+      this.timeout(4000);
       mongooseUtil.connectToServer((err)=> {
           console.log(err)
           expect(err).to.equal(null);
